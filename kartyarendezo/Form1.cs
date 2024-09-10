@@ -19,46 +19,13 @@ namespace kartyarendezo
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            
         }
-        public static string SzinSzamol(int x)
-        {
-            int a = x / 13;
-
-            if (a <= 1)
-            {
-                return $"black spades (♠)";
-            }
-
-            if ((1 < a) && (a <= 2))
-            {
-                return $"red hearts (♥)";
-            }
-
-            if ((2 < a) && (a <= 3))
-            {
-                return $"blue diamonds (♦)";
-            }
-
-            if ((3 < a) && (a <= 4))
-            {
-                return $"green clubs (♣)";
-            }
-
-            return "error";
-        }
-
-        private void button1_Click(object sender, EventArgs e)
+        public static int[] kever(int keveresSzama, int[] lapok) 
         {
             Random random = new Random();
-            int[] lapok = new int[52];
 
-            for (int i = 0; i < lapok.Length; i++)
-            {
-                lapok[i] = i;
-            }
-            
-            for (int i = 0; i < 150; i++)
+            for (int i = 0; i < keveresSzama; i++)
             {
                 int a = random.Next(0, 52);
                 int b = random.Next(0, 52);
@@ -67,6 +34,70 @@ namespace kartyarendezo
                 lapok[a] = lapok[b];
                 lapok[b] = s;
             }
+
+            return lapok;
+        }
+        public static string dupplaPar(int[] lapok)
+        {
+            int[] otLap = new int[5];
+            bool dupplaE = false;
+
+            for (int i = 0; i < 5; i++)
+                otLap[i] = lapok[i] % 13;
+
+            Array.Sort(otLap);
+
+            if ((otLap[0] == otLap[1]) && ((otLap[2] == otLap[3]) | (otLap[3] == otLap[4])))
+                dupplaE = true;
+
+            if ((otLap[1] == otLap[2]) && (otLap[3] == otLap[4]))
+                dupplaE = true;
+
+            if ((otLap[2] == otLap[3]) && (otLap[0] == otLap[1]))
+                dupplaE = true;
+
+            if ((otLap[3] == otLap[4]) && ((otLap[0] == otLap[1]) | (otLap[2] == otLap[3])))
+                dupplaE = true;
+
+            if (dupplaE == true)
+                return "Duppla Pár!";
+            else
+                return "Nem Duppla Pár!";
+        }
+        public static string SzinSzamol(int lap)
+        {
+            int a = lap / 13;
+
+            if (a < 1)
+                return $"[♠{lap % 13}]";
+
+            if ((a >= 1) && (a < 2))
+                return $"[♥{lap % 13}]";
+
+            if ((a >= 2) && (a < 3))
+                return $"[♦{lap % 13}]";
+
+            if ((a >= 3) && (a < 4))
+                return $"[♣{lap % 13}]";
+
+            return "error";
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            label1.Text = "";
+            label2.Text = "";
+            label3.Text = "";
+
+            Random random = new Random();
+            int[] lapok = new int[52];
+            int keveresSzama = 150;
+
+            for (int i = 0; i < lapok.Length; i++)
+            {
+                lapok[i] = i;
+            }
+            
+            kever(keveresSzama, lapok);
             
             for (int i = 0; i < lapok.Length; i++)
             {
@@ -75,10 +106,10 @@ namespace kartyarendezo
 
             for (int i = 0; i < 5; i++)
             {
-                label2.Text += $"{i + 1}: {lapok[i]} | {SzinSzamol(lapok[i])}\n";
+                label2.Text += $"{i + 1}: {SzinSzamol(lapok[i])}\n";
             }
 
-
+            label3.Text = dupplaPar(lapok);
         }
     }
 }
